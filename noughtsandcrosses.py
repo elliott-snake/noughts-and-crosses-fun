@@ -15,15 +15,6 @@ uri = "ws://assheton-jones.co.uk:8765"
 
 anti_alias = True
 
-pygame.init()
-pygame.font.init()
-ox_font = pygame.font.SysFont('Comic Sans MS', 90)
-board_characters = [
-    ox_font.render(" ", False, (0, 0, 0)),
-    ox_font.render("O", False, (0, 0, 0)),
-    ox_font.render("X", False, (0, 0, 0))
-]
-
 def draw_board(board, screen):
     screen.fill((255, 255, 255))
     pygame.draw.line(screen, (0, 0, 0), (100, 5), (100, 295))
@@ -295,4 +286,13 @@ def run():
         my_name, other_name = names_gui(websocket)
         play_game(my_name, other_name, websocket)
 
-run()
+if __name__ == '__main__':
+    pygame.init()
+    pygame.font.init()
+    ox_font = pygame.font.SysFont('Comic Sans MS', 90)
+    board_characters = [
+        ox_font.render(" ", False, (0, 0, 0)),
+        ox_font.render("O", False, (0, 0, 0)),
+        ox_font.render("X", False, (0, 0, 0))
+    ]
+    run()
