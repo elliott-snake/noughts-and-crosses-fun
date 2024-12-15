@@ -40,7 +40,7 @@ def draw_board(board, screen):
             screen.blit(character, (col*100 + 15, row*100 - 15))
 
 def flash_message(screen, message, colour):
-    font = pygame.font.SysFont('Comic Sans MS', 30)
+    font = pygame.font.SysFont('Comic Sans MS', 20)
     message_red = font.render(message, anti_alias, colour)
     message_white = font.render(message, anti_alias, (255, 255, 255))
     for i in range(8):
