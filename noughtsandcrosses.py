@@ -24,8 +24,6 @@ board_characters = [
     ox_font.render("X", False, (0, 0, 0))
 ]
 
-screen = pygame.display.set_mode((300, 300))
-
 def draw_board(board, screen):
     screen.fill((255, 255, 255))
     pygame.draw.line(screen, (0, 0, 0), (100, 5), (100, 295))
@@ -230,8 +228,10 @@ def names_gui(websocket):
 
 
 def play_game(my_name, other_name, websocket):
+    screen = pygame.display.set_mode((300, 300))
     my_turn, my_symbol, their_symbol = choose_who_starts(websocket, screen, my_name, other_name)
     board = np.zeros((3, 3), dtype=np.int16)
+
 
     while True:
         events = pygame.event.get()
