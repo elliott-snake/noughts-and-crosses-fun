@@ -53,11 +53,11 @@ def flash_message(screen, message, colour):
         time.sleep(.25)
         pygame.display.update()
 
-def send_message(websocket, type, message):
+def send_message(websocket, type, message, other_name):
     websocket.send(f'{other_name}:{type}:{str(message)}')
     websocket.recv()
 
-def check_for_messages(websocket):
+def check_for_messages(websocket, my_name):
     websocket.send(f'{my_name}:Check for messages')
     message_and_type = websocket.recv()
     if message_and_type == 'NO MESSAGE':
@@ -96,14 +96,14 @@ def no_one_wins(board):
     else:
         return False
 
-def choose_who_starts(websocket, screen):
+def choose_who_starts(websocket, screen, my_name, other_name):
     print('Choosing who starts')
     my_num = random.random()
-    send_message(websocket, 'who_starts_random', my_num)
+    send_message(websocket, 'who_starts_random', my_num, other_name)
 
     number_received = False
     while not number_received:
-        message_type, message = check_for_messages(websocket)
+        message_type, message = check_for_messages(websocket, my_name)
         print(f'{message_type}:{message}')
         message_pieces = message.split(":")
         if message is None or message_pieces[0] != 'who_starts_random':
@@ -230,7 +230,7 @@ def names_gui(websocket):
 
 
 def play_game(my_name, other_name, websocket):
-    my_turn, my_symbol, their_symbol = choose_who_starts(websocket, screen)
+    my_turn, my_symbol, their_symbol = choose_who_starts(websocket, screen, my_name, other_name)
     board = np.zeros((3, 3), dtype=np.int16)
 
     while True:
@@ -248,12 +248,12 @@ def play_game(my_name, other_name, websocket):
                 clicked = True
 
         if clicked and my_turn and board[row, col] == 0:
-            send_message(websocket, 'player_move', row*10 + col)
+            send_message(websocket, 'player_move', row*10 + col, other_name)
             board[row, col] = my_symbol
             my_turn = False
 
         if not my_turn:
-            message_type, message = check_for_messages(websocket)
+            message_type, message = check_for_messages(websocket, my_name)
             message_pieces = message.split(":")
             if message_pieces[0] is not None and message_pieces[0] == 'player_move':
                 row = int(message_pieces[1]) // 10
@@ -280,7 +280,9 @@ def play_game(my_name, other_name, websocket):
 
         if game_over:
             my_turn, my_symbol, their_symbol = choose_who_starts(websocket,
-                                                                 screen)
+                                                                 screen,
+                                                                 my_name,
+                                                                 other_name)
 
         pygame.display.update()
         pygame.time.Clock().tick(30)
@@ -288,7 +290,9 @@ def play_game(my_name, other_name, websocket):
 
 
 
+def run():
+    with connect(uri) as websocket:
+        my_name, other_name = names_gui(websocket)
+        play_game(my_name, other_name, websocket)
 
-with connect(uri) as websocket:
-    my_name, other_name = names_gui(websocket)
-    play_game(my_name, other_name, websocket)
+run()
