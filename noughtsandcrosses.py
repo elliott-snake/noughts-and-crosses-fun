@@ -254,17 +254,23 @@ def play_game(my_name, other_name, websocket):
 
         draw_board(board, screen)
 
+        pygame.display.update()
+        pygame.time.Clock().tick(30)
+
         three_in_a_row_result = three_in_a_row(board)
         game_over = False
         if three_in_a_row_result == my_symbol:
+            time.sleep(1)
             flash_message(screen, "YOU WIN!!!", (0, 255, 0))
             board = np.zeros((3, 3), dtype=np.int16)
             game_over = True
         if three_in_a_row_result == their_symbol:
+            time.sleep(1)
             flash_message(screen, "YOU LOSE!!!", (255, 0, 0))
             board = np.zeros((3, 3), dtype=np.int16)
             game_over = True
         if no_one_wins(board):
+            time.sleep(1)
             flash_message(screen, "GREAT.", (128, 128, 128))
             board = np.zeros((3, 3), dtype=np.int16)
             game_over = True
